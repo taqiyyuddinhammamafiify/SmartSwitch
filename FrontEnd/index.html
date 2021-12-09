@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet'>
+    <style>
+      * {
+        box-sizing: border-box;
+        max-height: 100vh;
+      }
+
+      .column {
+        float: left;
+        width: 33.33%;
+        padding: 10px;
+        height: 120px;
+        background-color: #58B8FF;
+        margin: 0;
+      }
+
+      body {
+        font-family: 'Lato';
+      }
+
+      .column-2 {
+        float: left;
+        width: 50%;
+        padding: 20px;
+      }
+
+      .column-table {
+        float: left;
+        width: 33.33%;
+        padding: 10px;
+        height: 120px;
+      }
+
+      .row:after {
+        content: "";
+        display: table;
+      }
+
+      .button-reset {
+        background-color: #ee0d0d;
+        border-radius: 12px;
+        position: static;
+        padding: 10px 20px;
+        border: 1px solid #fff;
+      }
+
+      .button-on {
+        background-color: #05f140;
+        border-radius: 10px;
+        position: static;
+        padding: 10px 20px;
+        border: 1px solid #fff;
+      }
+
+      .button-off {
+        background-color: #cccccc;
+        border-radius: 10px;
+        position: static;
+        padding: 10px 20px;
+        border: 1px solid #fff;
+      }
+
+      .bg-gradient-top {
+        margin: 0;
+        padding: 40px;
+        background: rgb(255, 255, 255);
+        background: linear-gradient(0deg, rgba(255, 255, 255, 1) 8%, rgba(38, 163, 255, 1) 93%);
+      }
+
+      .dropbtn {
+        color: black;
+        padding: 8px 24px;
+        font-size: 14px;
+        border-radius: 10px;
+        border: 2px solid #A0B9C6;
+      }
+
+      .dropdown {
+        position: relative;
+        display: inline-block;
+      }
+
+      .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f1f1f1;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+      }
+
+      .dropdown-content a {
+        color: black;
+        padding: 8px;
+        text-decoration: none;
+        display: block;
+      }
+
+      .dropdown-content a:hover {
+        background-color: #ddd;
+      }
+
+      .dropdown:hover .dropdown-content {
+        display: block;
+      }
+
+      .dropdown:hover .dropbtn {
+        background-color: #ddd;
+      }
+      
+      .nr-dashboard-template {
+          overflow-y: initial !important;
+      }
+      
+    </style>
+  </head>
+  <body style="">
+    <div style="margin:0; display:flex; flex-direction: column; flex-grow: 1;">
+        <div style="">
+        <div class="row" style="padding-bottom:20px;">
+          <div class="column" style="text-align:center;">
+            <div>
+              <img src="./cropped-Simbol-Logo-Garis.png" loading="lazy" width="80" heigh="80">
+            </div>
+          </div>
+          <div class="column" style="text-align:center;">
+            <h1>Tugas Akhir SBM</h1>
+          </div>
+          <div class="column"></div>
+        </div>
+        <div class="bg-gradient-top">
+          <div style="padding-left:100px; padding-top:40px;">
+            <h2>Status</h2>
+          </div>
+          <div class="row">
+            <div class="column-2" style="text-align:center;">
+              <div style="padding-bottom:20px;">
+                <img src="./donut-chart.svg" loading="lazy" width="130" heigh="130">
+              </div>
+              <div class="column-2" style="text-align:center;">
+                <div>Aktif</div>
+                <h3>2</h3>
+              </div>
+              <div class="column-2" style="text-align:center;">
+                <div>Non-Aktif</div>
+                <h3>4</h3>
+              </div>
+            </div>
+            <div class="column-2" style="padding-bottom:40px;">
+              <div style="text-align:center;">
+                <h4>Timer Meja</h4>
+              </div>
+              <div style="padding-bottom:20px;">Pilih waktu timer untuk memutus aliran listrik secara otomatis. </div>
+              <div class="column-2" style="padding-bottom:20px;">
+                <div class="dropdown">
+                  <button class="dropbtn">Pilih Waktu</button>
+                  <div class="dropdown-content">
+                    <a href="#">150 Menit</a>
+                    <a href="#">120 Menit</a>
+                    <a href="#">90 Menit</a>
+                    <a href="#">60 Menit</a>
+                  </div>
+                </div>
+              </div>
+              <div class="column-2">
+                <a href="">
+                  <button class="button-reset">Reset</button>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div style="text-align:center;">
+            <a>Sisa Waktu</a>
+          </div>
+          <div style="text-align:center;">
+            <a>30 Menit</a>
+          </div>
+        </div>
+        <div style="text-align:center;">
+          <h2>Pengaturan Meja</h2>
+        </div>
+        <div class="row" style="padding-right:60px; padding-left:120px; max-height: 100%;">
+            <div class="column-table" ng-repeat="(key, value) in msg.payload">
+                <h3>{{key}}</h3>
+                <div ng-repeat="(childKey, childValue) in value">
+                    <h5>{{childKey}}</h5>
+                    <a ng-if="childValue" href="/api/{{key}}/{{childKey}}/off">
+                      <button class="button-on">Hidup</button>
+                    </a>
+                    <a ng-if="!childValue" href="/api/{{key}}/{{childKey}}/on">
+                      <button class="button-off">Mati</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div>
+            <img src="./bg_white.svg" loading="lazy" width="1000" heigh="100">
+        </div>
+        </div>
+    </div>
+  </body>
+</html>
