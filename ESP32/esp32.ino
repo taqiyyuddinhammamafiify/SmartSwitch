@@ -16,6 +16,8 @@ const int port = 443;
 // Ukuran payload, ganti ke ukuran yang diinginkan
 StaticJsonDocument<200> doc;
 char data[80];
+String lampu1 = "0";
+String lampu2 = "0";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -51,17 +53,18 @@ void callback(char* topic, byte* payload, unsigned int length) {
    }
    
    Serial.println();
-   deserializeJson(doc, inData);
+   deserializeJson(doc, payload);
    
-   // Pull the value from key "VALUE" from the JSON message {"value": 1 , "someOtherValue" : 200}
-   String val = doc["lampu1"];
-   // DO SOMETHING WITH THE DATA THAT CAME IN!
-   Serial.println(val); 
+   // Pull the value from key "VALUE" from the JSON message {"value": 1 , "someOtherValue" : 200}, ganti ke sensor pada device
+   String val1 = doc["lampu1"];
+   String val2 = doc["lampu2"];
+   lampu1 = val1;
+   lampu2 = val2;
 
    // Kondisi untuk smart switch, ganti ke digital write atau lainnya
-   if (val == "1") {
+   if (true) {
       
-   } else if (val == "0") {
+   } else if (false) {
      
    }
 }
@@ -86,9 +89,8 @@ void loop() {
     mqttconnect();
    }
    // This sends off your payload. ganti dengan payload yang diinginkan
-   String lampu1 = "1";
-   String lampu2 = "0";
-   String payload = "{\"lampu1\": " + lampu1 + ", \"lampu2\": " + lampu2 + "}";
+   
+   String payload = "{\"lampu1\": " + String(lampu1) + ", \"lampu2\": " + String(lampu2) + "}";
    payload.toCharArray(data, (payload.length() + 1));
    client.publish(TOPIC, data);
    delay(500);
