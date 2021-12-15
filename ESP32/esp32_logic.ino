@@ -1,7 +1,7 @@
-const int RELAY_PIN1 = 5;  //Relay
-const int RELAY_PIN2 = 4;  //Relay
-const int buttonPin1 = 3; //Push_button1
-const int buttonPin2 = 2; //Push_button2
+const int RELAY_PIN1 = 33; //5;  //Relay
+const int RELAY_PIN2 = 32; //4;  //Relay
+const int buttonPin1 = 26; //3; //Push_button1
+const int buttonPin2 = 25; //Push_button2
 unsigned long button_time1 = 0;
 unsigned long last_button_time1 = 0;
 unsigned long button_time2 = 0;
