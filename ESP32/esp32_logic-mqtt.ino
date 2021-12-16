@@ -1,6 +1,5 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
-#include <ArduinoJson.h>
 
 //Logic ESP
 const int RELAY_PIN1 = 33; //5;  //Relay
@@ -21,15 +20,12 @@ const char* password = "PASSWORD";
 const char* server = "node-red.hfrk.de";
 const char* mqtt_server = "20.63.210.119";
 const char *ID = "ESP_Alex";  // Ganti dengan nama device
-const char *TOPIC = "ESP1";  // Ganti dengan topic yang ingin disubscribe
+const char *TOPIC_1 = "ESP1/Lampu1";  // Ganti dengan topic yang ingin disubscribe
+const char *TOPIC_2 = "ESP1/Lampu2";
+const char *TOPIC_3 = "TIMER";
 
-const int port = 443;
-
-// Ukuran payload, ganti ke ukuran yang diinginkan
-StaticJsonDocument<200> doc;
+const int mqtt_port = 1883;
 char data[80];
-String lampu1 = "0";
-String lampu2 = "0";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -40,10 +36,14 @@ void mqttconnect() {
     Serial.print("Attempting MQTT connection...");
     // Attempt to connect
     if(client.connect(ID)) {
-      client.subscribe(TOPIC);
+      client.subscribe(TOPIC_1);
+      client.subscribe(TOPIC_2);
+      client.subscribe(TOPIC_3);
       Serial.println("connected");
       Serial.print("Subcribed to: ");
-      Serial.println(TOPIC);
+      Serial.println(TOPIC_1);
+      Serial.println(TOPIC_2);
+      Serial.println(TOPIC_3);
       Serial.println('\n');
 
     } else {
@@ -55,31 +55,38 @@ void mqttconnect() {
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
-   // handle message arrived
-   char inData[80];
-   
-   Serial.print("payload: ");
-   for(int i = 26; i < length; i++){
-      // Serial.print((char)payload[i]);
-      inData[(i - 26)] = (char)payload[i];
-   }
-   
-   Serial.println();
-   deserializeJson(doc, payload);
-   
-   // Pull the value from key "VALUE" from the JSON message {"value": 1 , "someOtherValue" : 200}, ganti ke sensor pada device
-   String val1 = doc["lampu1"];
-   String val2 = doc["lampu2"];
-   lampu1 = val1;
-   lampu2 = val2;
-
-   // Kondisi untuk smart switch, ganti ke digital write atau lainnya
-   /*if (true) {
-      
-   } else if (false) {
-     
-   }
-}*/
+  if (strncmp(topic, "TIMER", 5) == 0) {
+    // TIMER logic
+    if (strncmp((char*)payload, "150", 3) == 0) {
+      // set timer ke 150 menit
+      Serial.println("Timer diset ke 150 menit");
+    }
+    else if (strncmp((char*)payload, "120", 3) == 0) {
+      // set timer ke 120 menit
+      Serial.println("Timer diset ke 120 menit");
+    }
+    else if (strncmp((char*)payload, "90", 2) == 0) {
+      // set timer ke 90 menit
+      Serial.println("Timer diset ke 90 menit");
+    }
+    else if (strncmp((char*)payload, "60", 2) == 0) {
+      // set timer ke 60 menit
+      Serial.println("Timer diset ke 60 menit");
+    }
+  }
+  else if (strncmp(topic, "ESP1/Lampu1", 11) == 0) {
+    if (strncmp((char*)payload, "true", 4) == 0} 
+      state1 = true;
+    else
+      state1 = false;
+  }
+  else if (strncmp(topic, "ESP1/Lampu2", 11) == 0) {
+    if (strncmp((char*)payload, "true", 4) == 0} 
+      state2 = true;
+    else
+      state2 = false;
+  }
+}
 
 
 void setup() {
@@ -99,7 +106,7 @@ void setup() {
       Serial.print(".");
    }
    Serial.println("");  Serial.print("WiFi connected to: "); Serial.println(ssid);  Serial.println("IP address: ");  Serial.println(WiFi.localIP());
-   client.setServer(mqtt_server, 1883);
+   client.setServer(mqtt_server, mqtt_port);
    client.setCallback(callback);
    delay(2000);
 }
@@ -132,9 +139,16 @@ void loop() {
    }
    // This sends off your payload. ganti dengan payload yang diinginkan
    
-   String payload = "{\"lampu1\": " + String(lampu1) + ", \"lampu2\": " + String(lampu2) + "}";
+   // Publish state1
+   String payload = state1 ? "true" : "false";
    payload.toCharArray(data, (payload.length() + 1));
-   client.publish(TOPIC, data);
+   client.publish(TOPIC_1, data);
+
+   // Publish state2
+   payload = state2 ? "true" : "false";
+   payload.toCharArray(data, (payload.length() + 1));
+   client.publish(TOPIC_2, data);
+
    delay(500);
    client.loop();
 }
